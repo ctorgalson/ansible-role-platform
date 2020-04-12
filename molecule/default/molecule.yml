@@ -1,6 +1,10 @@
 ---
 dependency:
   name: galaxy
+  options:
+    # Bizarrely, Molecule treats this path completely differently from all
+    # other paths that can be specified in this file.
+    role-file: molecule/requirements.yml
 lint: |
   ./scripts/lint.sh
 driver:
@@ -12,6 +16,8 @@ platforms:
     pre_build_image: true
 provisioner:
   name: ansible
+  playbooks:
+    prepare: ../prepare.yml
 verifier:
   name: testinfra
   directory: ../../tests
