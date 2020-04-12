@@ -1,0 +1,19 @@
+---
+- name: Verify
+  hosts: all
+  tasks:
+    - name: Find and verify platform.sh cli version.
+      block:
+        - name: Find the platform cli version.
+          command: "platform --version"
+          args:
+            chdir: "/home/molecule"
+          become: true
+          become_user: "molecule"
+          become_flags: "-l"
+          register: psh_version
+
+        - name: Verify the platform cli version.
+          assert:
+            that: "'Platform.sh CLI 3' in psh_version.stdout"
+            fail_msg: "The platform.sh cli version could not be determined."

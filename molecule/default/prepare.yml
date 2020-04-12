@@ -1,5 +1,18 @@
 ---
 - name: Prepare
   hosts: all
+  vars:
+    # weareinteractive.apt vars.
+    apt_packages:
+      - "git"
+    # weareinteractive.users vars.
+    users:
+      - username: "molecule"
+        shell: "/bin/bash"
+    # geerlingguy.php vars.
+    php_enable_webserver: false
+    php_default_version_debian: "7.2"
   roles:
+    - "weareinteractive.apt"
+    - "weareinteractive.users"
     - "geerlingguy.php"
