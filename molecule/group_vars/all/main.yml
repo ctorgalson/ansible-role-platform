@@ -1,0 +1,10 @@
+---
+# Shared group vars for molecule tests of ansible-role-platform.
+
+psh_user: "molecule"
+psh_bin: "{{ psh_user_home }}/.platformsh/bin/platform"
+psh_dest: "{{ psh_user_home }}/platformsh-cli"
+psh_repo: "https://github.com/platformsh/platformsh-cli.git"
+psh_user_home: "/home/{{ psh_user }}"
+psh_user_rc_file: "{{ psh_user_home }}/.bashrc"
+psh_user_shell: "/bin/bash"

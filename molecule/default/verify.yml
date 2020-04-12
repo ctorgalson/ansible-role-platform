@@ -5,15 +5,27 @@
     - name: Find and verify platform.sh cli version.
       block:
         - name: Find the platform cli version.
-          command: "platform --version"
-          args:
-            chdir: "/home/molecule"
-          become: true
-          become_user: "molecule"
-          become_flags: "-l"
+          command: "{{ psh_bin }} --version"
           register: psh_version
+          become: true
+          become_user: "{{ psh_user }}"
+          changed_when: false
 
         - name: Verify the platform cli version.
           assert:
             that: "'Platform.sh CLI 3' in psh_version.stdout"
             fail_msg: "The platform.sh cli version could not be determined."
+
+    - name: Ensure platform content exists in user rc file.
+      block:
+        - name: Get the contents of the user rc file.
+          command: "cat {{ psh_user_rc_file }}"
+          register: psh_user_rc_file_contents
+          become: true
+          become_user: "{{ psh_user }}"
+          changed_when: false
+
+        - name: Verify platform cli configuration exists in user rc file.
+          assert:
+            that: "'Platform.sh CLI configuration' in psh_user_rc_file_contents.stdout"
+            fail_msg: "The platform.sh cli configuraiton section was not found in the user's rc file."

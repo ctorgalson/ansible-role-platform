@@ -2,7 +2,6 @@
 - name: Converge
   hosts: all
   vars:
-    psh_user: "molecule"
   tasks:
     - name: "Include ansible-role-platform"
       include_role:
