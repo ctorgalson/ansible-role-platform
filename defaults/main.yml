@@ -1,2 +1,10 @@
 ---
 # defaults file for ansible-role-platform
+
+psh_user: "example"
+psh_user_home: "/home/{{ psh_user }}"
+psh_user_shell: "/bin/bash"
+psh_user_rc_file: "{{ psh_user_home }}/.bashrc"
+psh_repo: "https://github.com/platformsh/platformsh-cli.git"
+psh_dest: "{{ psh_user_home }}/platformsh-cli"
+psh_bin: "{{ psh_user_home }}/.platformsh/bin/platform"

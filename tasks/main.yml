@@ -1,2 +1,50 @@
 ---
 # tasks file for ansible-role-platform
+
+- name: Check if platform.sh cli installed (if installed, it can self-update).
+  shell: "find /home/{{ psh_user }} -type f -name platform"
+  register: psh_platform_exists
+  become: true
+  become_user: "{{ psh_user }}"
+  failed_when: false
+  changed_when: false
+
+- name: Install platform.sh cli if it's not already present.
+  block:
+    - name: Clone platform.sh cli into user directory.
+      git:
+        repo: "{{ psh_repo }}"
+        dest: "{{ psh_dest }}"
+      become: true
+      become_user: "{{ psh_user }}"
+
+    - name: Run installer.
+      command:
+        argv:
+          - "php"
+          - "installer.php"
+          - "--shell-type {{ psh_user_shell|basename }}"
+      args:
+        chdir: "{{ psh_dest }}/dist"
+      become: true
+      become_user: "{{ psh_user }}"
+
+    - name: Remove platform.sh cli download.
+      file:
+        path: "{{ psh_dest }}"
+        state: absent
+  when: "psh_platform_exists.stdout != psh_bin"
+
+- name: Re-source the user profile and run the platform.sh cli self-update.
+  shell: >
+    source /etc/profile
+    && {{ psh_bin }} self:update
+  args:
+    executable: "{{ psh_user_shell }}"
+  register: psh_platform_update
+  become: true
+  become_user: "{{ psh_user }}"
+  become_method: "su"
+  become_flags: "-l"
+  changed_when: "psh_platform_update.rc == 0"
+  failed_when: "psh_platform_update.rc > 1"
