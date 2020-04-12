@@ -1,38 +1,46 @@
-Role Name
-=========
+# Ansible Role Platform
 
-A brief description of the role goes here.
+![Molecule Test](https://github.com/ctorgalson/ansible-role-platform/workflows/Molecule%20Test/badge.svg)
 
-Requirements
-------------
+This role idempotently installs the [platform.sh cli tool](https://docs.platform.sh/development/cli.html) on Ubuntu/Debian systems.
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+Specifically, the role performs the following tasks:
 
-Role Variables
---------------
+1. Clones the platform.sh cli repo in to a user directory,
+2. Runs the platform.sh cli installer,
+3. Removes the cloned repository,
+4. Runs `platform self:update`.
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+## Role Variables
 
-Dependencies
-------------
+All of the following variables can be set, but _only_ `psh_user` is mandatory.
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+| Variable name | Default value | Description |
+|---------------|---------------|-------------|
+| `psh_user`         | `example` | The user to install the cli tool for. |
+| `psh_user_home`    | `/home/{{ psh_user }}` | The path to the user's home directory. Should not normally need changing. |
+| `psh_user_shell`   | `/bin/bash` | Path to the user's shell. |
+| `psh_user_rc_file` | `{{ psh_user_home }}/.bashrc` | The rc file to add platform.sh cli configuration to. |
+| `psh_repo`         | `https://github.com/platformsh/platformsh-cli.git` | The github url to the repository. Should seldom need changing. |
+| `psh_dest`         | `{{ psh_user_home }}/platformsh-cli` | The temporary location for the repository on the remote system. |
+| `psh_bin`          | `{{ psh_user_home }}/.platformsh/bin/platform` | The path to the `platform` binary, post-install. |
 
-Example Playbook
-----------------
+## Example Playbook
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+    ---
+    - name: Install platformsh-cli tool.
+      hosts: all
+      vars:
+        psh_user: "molecule"
+      tasks:
+        - name: "Include ansible-role-platform"
+          include_role:
+            name: "ansible-role-platform"
 
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
+## License
 
-License
--------
+GPLv2
 
-BSD
+## Author Information
 
-Author Information
-------------------
-
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+Christopher Torgalson
