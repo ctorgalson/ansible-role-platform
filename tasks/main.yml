@@ -38,8 +38,6 @@
 
 - name: Run the platform.sh cli self-update.
   command: "{{ psh_bin }} self:update"
-  args:
-    executable: "{{ psh_user_shell }}"
   register: psh_platform_update
   become: true
   become_user: "{{ psh_user }}"
