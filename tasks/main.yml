@@ -2,7 +2,7 @@
 # tasks file for ansible-role-platform
 
 - name: Check if platform.sh cli installed (if installed, it can self-update).
-  shell: "find /home/{{ psh_user }} -type f -name platform"
+  command: "find /home/{{ psh_user }} -type f -name platform"
   register: psh_platform_exists
   become: true
   become_user: "{{ psh_user }}"
@@ -15,6 +15,7 @@
       git:
         repo: "{{ psh_repo }}"
         dest: "{{ psh_dest }}"
+        version: "master"
       become: true
       become_user: "{{ psh_user }}"
 
@@ -35,10 +36,8 @@
         state: absent
   when: "psh_platform_exists.stdout != psh_bin"
 
-- name: Re-source the user profile and run the platform.sh cli self-update.
-  shell: >
-    source /etc/profile
-    && {{ psh_bin }} self:update
+- name: Run the platform.sh cli self-update.
+  command: "{{ psh_bin }} self:update"
   args:
     executable: "{{ psh_user_shell }}"
   register: psh_platform_update
