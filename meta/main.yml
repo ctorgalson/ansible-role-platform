@@ -5,6 +5,8 @@ galaxy_info:
 
   license: (GPL-2.0
 
+  role_name: platform
+
   min_ansible_version: 2.9
 
   platforms:
