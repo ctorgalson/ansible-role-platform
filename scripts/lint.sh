@@ -22,24 +22,13 @@ echo ''
 # Run ansible-lint check.
 echo 'Starting ansible-lint...'
 
-# ansible-lint supposedly works if passed a path, but it really doesn't look as
-# though it does. So for now, lets find all the likely candidate files (yaml
-# files not in roles, or in .venv) and ansible-lint each of them individually.
-#
-# This also means that (for the moment) the .ansible-lint file in the project
-# root is ignored.
-ANSIBLELINT_OUTPUT=$(find . -type f \
-  -name '*.yml' \
-  -not -path './.venv/*' \
-  -not -path './roles/*' \
-  -not -path './playbooks/roles/*' \
-  -exec ansible-lint {} +)
+ANSIBLELINT_OUTPUT=$(ansible-lint ./)
 ANSIBLELINT_RETURN="$?"
 
 # Run flake8 check.
 echo 'Starting flake8...'
 
-FLAKE8_OUTPUT=$(flake8 ./plugins/modules/*)
+FLAKE8_OUTPUT=$(flake8 ./molecule/tests/*.py)
 FLAKE8_RETURN="$?"
 
 # Run shellcheck check.
